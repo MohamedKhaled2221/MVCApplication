@@ -9,6 +9,7 @@ using Route.MVCAPP.DAL.Models.Departments;
 
 namespace Route.MVCAPP.DAL.Persistence.Data.Contexts
 {
+    #region Part 3 Department Module ( Entities , Configurations ) 
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -26,5 +27,6 @@ namespace Route.MVCAPP.DAL.Persistence.Data.Contexts
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-    }
+    } 
+    #endregion
 }
