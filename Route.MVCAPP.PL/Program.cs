@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Route.MVCAPP.DAL.Persistence.Data.Contexts;
+
 namespace Route.MVCAPP.PL
 {
     public class Program
@@ -8,6 +12,13 @@ namespace Route.MVCAPP.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            #region Part 4 DbContext With Dependency Injection
+            builder.Services.AddDbContext<ApplicationDbContext>((OptionsBuilder) =>
+           {
+               OptionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+           });
+
+            #endregion
 
             var app = builder.Build();
 

@@ -16,11 +16,7 @@ namespace Route.MVCAPP.DAL.Persistence.Data.Contexts
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server= .;Database=MVCAPP;Trusted_Connection=True;TrustServerCertificate=true");
-        }
-
+      
         public DbSet<Department> Departments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
