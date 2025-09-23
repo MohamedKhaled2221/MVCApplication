@@ -11,6 +11,7 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
     public interface IDepartmentRepository
     {
         // 5 CRUD Operations
+
         // 1. Get by id
         Department? GetById(int id);
         // 2. Get all

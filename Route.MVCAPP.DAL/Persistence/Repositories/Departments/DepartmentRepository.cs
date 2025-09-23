@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Route.MVCAPP.DAL.Models.Departments;
 using Route.MVCAPP.DAL.Persistence.Data.Contexts;
 
+
 namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
 {
     #region Part 5 Department Repository - DAL
@@ -18,6 +19,7 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
 
             _dbContext = dbContext;
         }
+
         public Department? GetById(int id)
         {
             return _dbContext.Find<Department>(id);
