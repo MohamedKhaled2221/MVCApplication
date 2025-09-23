@@ -34,6 +34,10 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
                 return _dbContext.Departments.ToList();   // unchanged
             }
         }
+        public IQueryable<Department> GetAllAsQueryable()
+        {
+         return _dbContext.Departments;
+        }
 
 
         public int Add(Department entity)
@@ -56,6 +60,8 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
             _dbContext.Departments.Update(entity);
             return _dbContext.SaveChanges();
         }
+
+        
     } 
     #endregion
 }
