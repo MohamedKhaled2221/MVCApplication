@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
 using Route.MVCAPP.BLL.Services;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
@@ -12,7 +13,7 @@ namespace Route.MVCAPP.PL.Controllers
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public DepartmentController(IDepartmentService departmentService,ILogger<DepartmentController>logger,IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
         {
             _departmentService = departmentService;
             _logger = logger;
@@ -72,11 +73,26 @@ namespace Route.MVCAPP.PL.Controllers
                     return View("Error", message);
                 }
 
-            } 
-            #endregion
-
+            }
         }
+        #endregion
+        #region Part 9 Department Controller - Details
+        public IActionResult Details(int? id)
+
+        {
+            if (id == null || id <= 0)
+            {
+                return BadRequest();
+            }
+            var department = _departmentService.GetDepartmentById(id.Value);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+
+
+        #endregion
     }
-
-
 }
