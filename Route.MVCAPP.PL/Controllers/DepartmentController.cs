@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Route.MVCAPP.BLL.DTOs;
 using Route.MVCAPP.BLL.Services;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
 
@@ -8,9 +9,14 @@ namespace Route.MVCAPP.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;
-        public DepartmentController(IDepartmentService departmentService)
+        private readonly ILogger<DepartmentController> _logger;
+        private readonly IWebHostEnvironment _environment;
+
+        public DepartmentController(IDepartmentService departmentService,ILogger<DepartmentController>logger,IWebHostEnvironment environment)
         {
             _departmentService = departmentService;
+            _logger = logger;
+            _environment = environment;
         }
         [HttpGet]
         public IActionResult Index()
@@ -19,8 +25,58 @@ namespace Route.MVCAPP.PL.Controllers
 
             return View(departments);
         }
+        #endregion
+        #region Part 8 Department Controller - Create
+        [HttpGet]
+        public IActionResult Create(int id)
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        {
+            if (!ModelState.IsValid) //Server Side Validation
+            {
+                return View(departmentDto);
+            }
+            var message = string.Empty;
+
+            try
+            {
+                var result = _departmentService.CreateDepartment(departmentDto);
+                if (result > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    message = "Failed to Create Department";
+                    ModelState.AddModelError(string.Empty, message);
+                    return View(departmentDto);
+                }
+            }
+            catch (Exception ex)
+            {
+                //1- Log Exception
+                _logger.LogError(ex, ex.Message);
+                //2- Set Message for User
+                if (_environment.IsDevelopment())
+                {
+                    message = ex.Message;
+                    return View(departmentDto);
+                }
+                else
+                {
+                    message = "Department is not Created";
+                    return View("Error", message);
+                }
+
+            } 
+            #endregion
+
+        }
+    }
 
 
-    } 
-    #endregion
 }
