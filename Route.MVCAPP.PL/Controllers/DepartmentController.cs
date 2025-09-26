@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
@@ -165,7 +166,54 @@ namespace Route.MVCAPP.PL.Controllers
                     return View("Error", message);
                 }
             }
-        } 
+        }
         #endregion
+        #region Part 2 Department Controller - Delete
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (!id.HasValue || id <= 0)
+            {
+                return BadRequest();
+            }
+            var department = _departmentService.GetDepartmentById(id.Value);
+            if (department == null)
+            {
+                return NotFound();
+            }
+            return View(department);
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var message = string.Empty;
+            try
+            {
+                var deleted = _departmentService.DeleteDepartment(id);
+
+                if (deleted)
+                {
+                    return RedirectToAction("Index");
+                }
+                message = "An Error Has been Occured :(";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                message = _environment.IsDevelopment() ? ex.Message : "An Error Has been Occured :(";
+            }
+            return RedirectToAction(nameof(Delete), new { id });
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
     }
-}
+    }
