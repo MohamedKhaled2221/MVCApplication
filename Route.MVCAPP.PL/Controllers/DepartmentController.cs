@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
 using Route.MVCAPP.BLL.Services;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
+using Route.MVCAPP.PL.ViewModels.Departments;
 
 namespace Route.MVCAPP.PL.Controllers
 {
@@ -93,6 +95,77 @@ namespace Route.MVCAPP.PL.Controllers
         }
 
 
+        #endregion
+        #region Part 1 Department Controller - Edit 
+        [HttpGet]
+
+        public IActionResult Edit(int? id)
+        {
+            if (!id.HasValue || id <= 0)
+            {
+                return BadRequest();
+            }
+            var department = _departmentService.GetDepartmentById(id.Value);
+            if (department == null)
+            {
+                return NotFound();
+
+            }
+            return View(new DepartmentEditViewModel()
+            {
+                Code = department.Code,
+                Name = department.Name,
+                Description = department.Description,
+                CreationDate = department.CreationDate
+            });
+        }
+        [HttpPost]
+        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(departmentVM);
+            }
+            var message = string.Empty;
+            try
+            {
+                var UpdateDepartment = new UpdatedDepartmentDto()
+                {
+                    Id = id,
+                    Code = departmentVM.Code,
+                    Name = departmentVM.Name,
+                    Description = departmentVM.Description,
+                    CreationDate = departmentVM.CreationDate
+                };
+                var Updated = _departmentService.UpdateDepartment(UpdateDepartment) > 0;
+                if (Updated)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    message = "An Error Has been Occured :(";
+                    ModelState.AddModelError(string.Empty, message);
+                    return View(departmentVM);
+                }
+            }
+            catch (Exception ex)
+            {
+                //1- Log Exception
+                _logger.LogError(ex, ex.Message);
+                //2- Set Message for User
+                if (_environment.IsDevelopment())
+                {
+                    message = ex.Message;
+                    return View(departmentVM);
+                }
+                else
+                {
+                    message = "An Error Has been Occured :(";
+                    return View("Error", message);
+                }
+            }
+        } 
         #endregion
     }
 }
