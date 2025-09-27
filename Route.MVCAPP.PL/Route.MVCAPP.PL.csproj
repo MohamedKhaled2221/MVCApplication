@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Route.MVCAPP.BLL\Route.MVCAPP.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Employees\" />
+  </ItemGroup>
+
 </Project>
