@@ -9,15 +9,17 @@ using Route.MVCAPP.DAL.Models.Departments;
 
 namespace Route.MVCAPP.DAL.Persistence.Data.Configurations.Departments
 {
+    #region Part 3 Department Module ( Entities , Configurations ) 
     internal class DepartmentConfiguration : IEntityTypeConfiguration<Department>
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
-            builder.Property(D => D.Id).UseIdentityColumn(10,10);
-            builder.Property(D=> D.Name).HasColumnType("varchar(50)").IsRequired();
+            builder.Property(D => D.Id).UseIdentityColumn(10, 10);
+            builder.Property(D => D.Name).HasColumnType("varchar(50)").IsRequired();
             builder.Property(D => D.Code).HasColumnType("varchar(50)").IsRequired();
             builder.Property(D => D.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
             builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GETDATE()");
         }
-    }
+    } 
+    #endregion
 }
