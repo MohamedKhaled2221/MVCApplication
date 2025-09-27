@@ -164,9 +164,10 @@ namespace Route.MVCAPP.PL.Controllers
                     return View("Error", message);
                 }
             }
-        } 
+        }
         #endregion
 
+        #region Part 10 - Employee Controller - Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -204,6 +205,7 @@ namespace Route.MVCAPP.PL.Controllers
             return RedirectToAction(nameof(Delete), new { id });
         }
 
+        #endregion 
         #endregion
 
     }

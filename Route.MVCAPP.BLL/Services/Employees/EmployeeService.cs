@@ -22,7 +22,7 @@ namespace Route.MVCAPP.BLL.Services.Employees
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
-                             .GetAllAsQueryable()
+                             .GetAllAsQueryable().Where(x => !x.IsDeleted)
                              .Select(employee => new EmployeeDto()
                              {
                                  Id = employee.Id,

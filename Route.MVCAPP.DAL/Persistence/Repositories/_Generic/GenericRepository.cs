@@ -28,11 +28,11 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories._Generic
         {
             if (withNoTracking)
             {
-                return _dbContext.Set<T>().AsNoTracking().ToList(); // Detached
+                return _dbContext.Set<T>().Where(x => !x.IsDeleted).AsNoTracking().ToList(); // Detached  
             }
             else
             {
-                return _dbContext.Set<T>().ToList();   // unchanged
+                return _dbContext.Set<T>().Where(x => !x.IsDeleted).ToList();   // unchanged  
             }
         }
         public IQueryable<T> GetAllAsQueryable()
@@ -49,7 +49,8 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories._Generic
 
         public int Delete(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            entity.IsDeleted = true;
+            _dbContext.Set<T>().Update(entity);
             return _dbContext.SaveChanges();
         }
 
