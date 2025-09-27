@@ -76,6 +76,8 @@ namespace Route.MVCAPP.PL.Controllers
         }
 
         #endregion
+        #region Part 8 Employee Controller - Details
+        [HttpGet]
         public IActionResult Details(int? id)
 
         {
@@ -89,7 +91,8 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound();
             }
             return View(Employee);
-        }
+        } 
+        #endregion
 
 
 
