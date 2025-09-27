@@ -11,9 +11,10 @@ namespace Route.MVCAPP.DAL.Models.Employees
     public class Employee : ModelBase
     {
         public string Name { get; set; } = null!;
+        public string? Email { get; set; }
 
         public string? Address { get; set; }
-        public DateTime HirringDate { get; set; }
+        public DateOnly HirringDate { get; set; }
         public string? PhoneNumber { get; set; }
         public decimal Salary { get; set; }
         public int? Age { get; set; }

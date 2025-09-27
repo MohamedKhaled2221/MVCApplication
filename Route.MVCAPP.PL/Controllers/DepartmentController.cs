@@ -3,7 +3,8 @@ using System.Security.Policy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
-using Route.MVCAPP.BLL.Services;
+using Route.MVCAPP.BLL.DTOs.Departments;
+using Route.MVCAPP.BLL.Services.Departments;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
 using Route.MVCAPP.PL.ViewModels.Departments;
 

@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Route.MVCAPP.BLL.Services;
+using Route.MVCAPP.BLL.Services.Departments;
 using Route.MVCAPP.DAL.Persistence.Data.Contexts;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
+using Route.MVCAPP.DAL.Persistence.Repositories.Employees;
+using Route.MVCAPP.BLL.Services.Employees;
+using Route.MVCAPP.BLL.DTOs.Departments;
 
 namespace Route.MVCAPP.PL
 {
@@ -22,6 +24,7 @@ namespace Route.MVCAPP.PL
 
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             #endregion
 
