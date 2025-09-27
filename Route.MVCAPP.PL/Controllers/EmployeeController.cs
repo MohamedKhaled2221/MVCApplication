@@ -91,80 +91,81 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound();
             }
             return View(Employee);
-        } 
+        }
         #endregion
 
 
 
+        #region Part 9 Employee Controller - Edit
         [HttpGet]
 
-        //public IActionResult Edit(int? id)
-        //{
-        //    if (!id.HasValue || id <= 0)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var Employee = _employeeService.GetEmployeeById(id.Value);
-        //    if (Employee == null)
-        //    {
-        //        return NotFound();
+        public IActionResult Edit(int? id)
+        {
+            if (!id.HasValue || id <= 0)
+            {
+                return BadRequest();
+            }
+            var Employee = _employeeService.GetEmployeeById(id.Value);
+            if (Employee == null)
+            {
+                return NotFound();
 
-        //    }
-        //    return View(new EmployeeEditViewModel()
-        //    {
-        //        Code = Employee.Code,
-        //        Name = Employee.Name,
-        //        Description = Employee.Description,
-        //        CreationDate = Employee.CreationDate
-        //    });
-        //}
+            }
+            return View(new UpdatedEmployeeDto
+            {
+                Name = Employee.Name,
+                Address = Employee.Address,
+                Age = Employee.Age,
+                Email = Employee.Email,
+                PhoneNumber = Employee.PhoneNumber,
+                Salary = Employee.Salary,
+                IsActive = Employee.IsActive,
+                EmployeeType = Employee.EmployeeType,
+                Gender = Employee.Gender,
+                HiringDate = Employee.HiringDate,
+            });
+        }
         [HttpPost]
-        //public IActionResult Edit([FromRoute] int id, EmployeeEditViewModel EmployeeVM)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(EmployeeVM);
-        //    }
-        //    var message = string.Empty;
-        //    try
-        //    {
-        //        var UpdateEmployee = new UpdatedEmployeeDto()
-        //        {
-        //            Id = id,
-        //            Code = EmployeeVM.Code,
-        //            Name = EmployeeVM.Name,
-        //            Description = EmployeeVM.Description,
-        //            CreationDate = EmployeeVM.CreationDate
-        //        };
-        //        var Updated = _employeeService.UpdateEmployee(UpdateEmployee) > 0;
-        //        if (Updated)
-        //        {
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            message = "An Error Has been Occured :(";
-        //            ModelState.AddModelError(string.Empty, message);
-        //            return View(EmployeeVM);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //1- Log Exception
-        //        _logger.LogError(ex, ex.Message);
-        //        //2- Set Message for User
-        //        if (_environment.IsDevelopment())
-        //        {
-        //            message = ex.Message;
-        //            return View(EmployeeVM);
-        //        }
-        //        else
-        //        {
-        //            message = "An Error Has been Occured :(";
-        //            return View("Error", message);
-        //        }
-        //    }
-        //}
+        public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employeeDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(employeeDto);
+            }
+            var message = string.Empty;
+            try
+            {
+
+                var Updated = _employeeService.UpdateEmployee(employeeDto) > 0;
+                if (Updated)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    message = "An Error Has been Occured :(";
+                    ModelState.AddModelError(string.Empty, message);
+                    return View(employeeDto);
+                }
+            }
+            catch (Exception ex)
+            {
+                //1- Log Exception
+                _logger.LogError(ex, ex.Message);
+                //2- Set Message for User
+                if (_environment.IsDevelopment())
+                {
+                    message = ex.Message;
+                    return View(employeeDto);
+                }
+                else
+                {
+                    message = "An Error Has been Occured :(";
+                    return View("Error", message);
+                }
+            }
+        } 
+        #endregion
 
         [HttpGet]
         public IActionResult Delete(int? id)
