@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Route.MVCAPP.DAL.Models.Departments;
+using Route.MVCAPP.DAL.Models.Employees;
 
 namespace Route.MVCAPP.DAL.Persistence.Data.Contexts
 {
@@ -17,12 +18,14 @@ namespace Route.MVCAPP.DAL.Persistence.Data.Contexts
         }
 
       
-        public DbSet<Department> Departments { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees {  get; set; }
     } 
     #endregion
 }
