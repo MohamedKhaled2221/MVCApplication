@@ -25,6 +25,7 @@ namespace Route.MVCAPP.PL.Controllers
             return View(Employees);
         }
 
+        #region Part 7 Employee Controller - Create
 
         [HttpGet]
         public IActionResult Create(int id)
@@ -74,6 +75,7 @@ namespace Route.MVCAPP.PL.Controllers
             }
         }
 
+        #endregion
         public IActionResult Details(int? id)
 
         {
