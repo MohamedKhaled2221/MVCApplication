@@ -4,6 +4,7 @@ using Route.MVCAPP.BLL.Services.Employees;
 
 namespace Route.MVCAPP.PL.Controllers
 {
+    #region Part 2 ValidateAntiForgeryToken
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -34,6 +35,7 @@ namespace Route.MVCAPP.PL.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CreatedEmployeeDto EmployeeDto)
         {
             if (!ModelState.IsValid) //Server Side Validation
@@ -126,6 +128,8 @@ namespace Route.MVCAPP.PL.Controllers
             });
         }
         [HttpPost]
+
+        [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -183,6 +187,8 @@ namespace Route.MVCAPP.PL.Controllers
             return View(Employee);
         }
         [HttpPost]
+
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -208,5 +214,6 @@ namespace Route.MVCAPP.PL.Controllers
         #endregion 
         #endregion
 
-    }
+    } 
+    #endregion
 }
