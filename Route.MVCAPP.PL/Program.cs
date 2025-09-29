@@ -8,10 +8,12 @@ using Route.MVCAPP.BLL.DTOs.Departments;
 
 namespace Route.MVCAPP.PL
 {
+
     public class Program
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  

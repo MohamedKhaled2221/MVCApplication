@@ -1,6 +1,7 @@
 ﻿@using Route.MVCAPP.BLL.DTOs.Departments
 @* Part 8 Department Controller - Create *@
 @model CreatedDepartmentDto
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -45,3 +46,8 @@
 
 	</form>
 </div>
+@section ValidationScripts {
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}

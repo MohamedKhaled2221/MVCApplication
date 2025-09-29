@@ -13,11 +13,7 @@ namespace Route.MVCAPP.DAL.Models.Departments
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
         public DateOnly CreationDate { get; set; }
-        public DateTime CreationTime { get; set; }
-        public DateTime LastModifiedOn
-        {
-            get; set;
-        }
+        
         #endregion
     }
 }

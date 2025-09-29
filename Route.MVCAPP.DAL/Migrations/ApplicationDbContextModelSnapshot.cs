@@ -37,16 +37,13 @@ namespace Route.MVCAPP.DAL.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -88,9 +85,9 @@ namespace Route.MVCAPP.DAL.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")

@@ -12,8 +12,8 @@ using Route.MVCAPP.DAL.Persistence.Data.Contexts;
 namespace Route.MVCAPP.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250927070850_EmployeeModuleMigration")]
-    partial class EmployeeModuleMigration
+    [Migration("20250927153005_EmployeeMigration")]
+    partial class EmployeeMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,16 +40,13 @@ namespace Route.MVCAPP.DAL.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateOnly>("CreationDate")
                         .HasColumnType("date");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -91,9 +88,9 @@ namespace Route.MVCAPP.DAL.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")

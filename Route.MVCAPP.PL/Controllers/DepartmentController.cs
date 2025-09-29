@@ -103,18 +103,19 @@ namespace Route.MVCAPP.PL.Controllers
 
         public IActionResult Edit(int? id)
         {
-            if (!id.HasValue || id <= 0)
+            if (!id.HasValue )
             {
-                return BadRequest();
+                return BadRequest(); //400
             }
             var department = _departmentService.GetDepartmentById(id.Value);
             if (department == null)
             {
-                return NotFound();
+                return NotFound(); //404
 
             }
             return View(new DepartmentEditViewModel()
             {
+              
                 Code = department.Code,
                 Name = department.Name,
                 Description = department.Description,
@@ -147,8 +148,7 @@ namespace Route.MVCAPP.PL.Controllers
                 else
                 {
                     message = "An Error Has been Occured :(";
-                    ModelState.AddModelError(string.Empty, message);
-                    return View(departmentVM);
+                    
                 }
             }
             catch (Exception ex)
@@ -156,45 +156,39 @@ namespace Route.MVCAPP.PL.Controllers
                 //1- Log Exception
                 _logger.LogError(ex, ex.Message);
                 //2- Set Message for User
-                if (_environment.IsDevelopment())
-                {
-                    message = ex.Message;
-                    return View(departmentVM);
-                }
-                else
-                {
-                    message = "An Error Has been Occured :(";
-                    return View("Error", message);
-                }
+
+                message = _environment.IsDevelopment() ? ex.Message : "An Error Has been Occured :(";
             }
+            ModelState.AddModelError(string.Empty, message);
+            return View(departmentVM);
         }
         #endregion
         #region Part 2 Department Controller - Delete
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if (!id.HasValue || id <= 0)
-            {
-                return BadRequest();
-            }
-            var department = _departmentService.GetDepartmentById(id.Value);
-            if (department == null)
-            {
-                return NotFound();
-            }
-            return View(department);
-        }
+        //[HttpGet]
+        //public IActionResult Delete(int? id)
+        //{
+        //    if (!id.HasValue || id <= 0)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var department = _departmentService.GetDepartmentById(id.Value);
+        //    if (department == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(department);
+        //}
         [HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Delete([FromRoute]int id)
         {
             var message = string.Empty;
             try
             {
-                var deleted = _departmentService.DeleteDepartment(id);
+                var deleted = _departmentService.DeleteDepartment(id) ;
 
                 if (deleted)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
                 }
                 message = "An Error Has been Occured :(";
             }
