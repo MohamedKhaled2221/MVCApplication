@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Route.MVCAPP.BLL.DTOs.Employees;
+using Route.MVCAPP.BLL.Services.Departments;
 using Route.MVCAPP.BLL.Services.Employees;
 
 namespace Route.MVCAPP.PL.Controllers
@@ -10,13 +11,15 @@ namespace Route.MVCAPP.PL.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IDepartmentService _departmentService;
 
         #region Part 6 Employee Controller
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
-        {
-            _employeeService = employeeService;
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment )
+        {;
             _logger = logger;
+            _employeeService = employeeService;
             _environment = environment;
+            
         }
         [HttpGet]
         public IActionResult Index()
@@ -29,8 +32,9 @@ namespace Route.MVCAPP.PL.Controllers
         #region Part 7 Employee Controller - Create
 
         [HttpGet]
-        public IActionResult Create(int id)
+        public IActionResult Create()
         {
+           
 
             return View();
         }
@@ -113,6 +117,8 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound();
 
             }
+            
+
             return View(new CreatedEmployeeDto()
             {
                 Name = Employee.Name,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Route.MVCAPP.DAL.Models.Employees;
 
 namespace Route.MVCAPP.DAL.Models.Departments
 {
@@ -13,7 +14,9 @@ namespace Route.MVCAPP.DAL.Models.Departments
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
         public DateOnly CreationDate { get; set; }
-        
+
+        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+
         #endregion
     }
 }

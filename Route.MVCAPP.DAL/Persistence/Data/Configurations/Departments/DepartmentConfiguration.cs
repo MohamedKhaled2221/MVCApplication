@@ -19,6 +19,11 @@ namespace Route.MVCAPP.DAL.Persistence.Data.Configurations.Departments
             builder.Property(D => D.Code).HasColumnType("varchar(50)").IsRequired();
             builder.Property(D => D.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
             builder.Property(D => D.LastModifiedOn).HasComputedColumnSql("GETDATE()");
+
+            builder.HasMany(D=>D.Employees)
+                   .WithOne(D=>D.Department)
+                   .HasForeignKey(D => D.DepartmentId)
+                   .OnDelete(DeleteBehavior.SetNull);
         }
     } 
     #endregion

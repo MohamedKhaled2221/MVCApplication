@@ -1,5 +1,11 @@
-﻿ @* Part 4 Partial View  *@
+﻿
+@* Part 4 Partial View  *@
 @model CreatedEmployeeDto
+@inject IDepartmentService departmentService
+@{
+    var Departments = new SelectList(departmentService.GetAllDepartments(),
+    nameof(DepartmentToReturnDto.Id), nameof(DepartmentToReturnDto.Name));
+}
 <form asp-action="@ViewBag.Action" class="row col-6">
 
     <div asp-validation-summary="ModelOnly"></div>
@@ -37,6 +43,15 @@
         <label class="col-form-label" asp-for="PhoneNumber"></label>
         <input asp-for="PhoneNumber" class="form-control" />
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-6 mb-3">
+        <label asp-for="DepartmentId" class="control-label"></label>
+        <select asp-for="DepartmentId" asp-items="@Departments" class="form-control">
+            <option value="@null">
+                Choose...
+            </option>
+        </select>
     </div>
 
     <div class="form-group col-6">
