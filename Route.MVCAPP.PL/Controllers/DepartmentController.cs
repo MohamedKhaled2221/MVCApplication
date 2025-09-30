@@ -26,6 +26,10 @@ namespace Route.MVCAPP.PL.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            #region Part 5 View Data and View Bag
+            ViewData["obj"] = "Hello From View Data";
+            ViewBag.obj2 = "Hello From View Bag"; 
+            #endregion
             var departments = _departmentService.GetAllDepartments();
 
             return View(departments);
@@ -38,6 +42,8 @@ namespace Route.MVCAPP.PL.Controllers
 
             return View();
         }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DepartmentViewModel departmentVM)
