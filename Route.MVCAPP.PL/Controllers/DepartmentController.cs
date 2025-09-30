@@ -26,10 +26,10 @@ namespace Route.MVCAPP.PL.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            #region Part 5 View Data and View Bag
-            ViewData["obj"] = "Hello From View Data";
-            ViewBag.obj2 = "Hello From View Bag"; 
-            #endregion
+            //#region Part 5 View Data and View Bag
+            //ViewData["obj"] = "Hello From View Data";
+            //ViewBag.obj2 = "Hello From View Bag"; 
+            //#endregion
             var departments = _departmentService.GetAllDepartments();
 
             return View(departments);
@@ -64,34 +64,32 @@ namespace Route.MVCAPP.PL.Controllers
                     CreationDate = departmentVM.CreationDate
                 };
                 var result = _departmentService.CreateDepartment(CreatedDepartmentDto);
+                #region Part 6 Temp Data
                 if (result > 0)
                 {
-                    return RedirectToAction("Index");
+                    TempData["Message"] = "Department Created Successfully :)";
+
                 }
                 else
                 {
-                    message = "Failed to Create Department";
+                    TempData["Message"] = "Failed to Create Department";
                     ModelState.AddModelError(string.Empty, message);
-                    return View(departmentVM);
-                }
+
+                } 
+                #endregion
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 //1- Log Exception
                 _logger.LogError(ex, ex.Message);
                 //2- Set Message for User
-                if (_environment.IsDevelopment())
-                {
-                    message = ex.Message;
-                    return View(departmentVM);
-                }
-                else
-                {
-                    message = "Department is not Created";
-                    return View("Error", message);
-                }
+                message = _environment.IsDevelopment() ? ex.Message : "An Error Has been Occured :(";
+                
 
             }
+            ModelState.AddModelError(string.Empty, message);
+            return View(departmentVM);
         }
         #endregion
         #region Part 9 Department Controller - Details

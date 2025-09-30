@@ -84,6 +84,7 @@ namespace Route.MVCAPP.BLL.Services.Departments
         {
             var departments = new Department
             {
+                Id = departmentDto.Id,
                 Name = departmentDto.Name,
                 Description = departmentDto.Description,
                 Code = departmentDto.Code,
