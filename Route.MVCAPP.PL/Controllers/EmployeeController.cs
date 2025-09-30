@@ -113,7 +113,7 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound();
 
             }
-            return View(new UpdatedEmployeeDto
+            return View(new CreatedEmployeeDto()
             {
                 Name = Employee.Name,
                 Address = Employee.Address,
@@ -130,7 +130,7 @@ namespace Route.MVCAPP.PL.Controllers
         [HttpPost]
 
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employeeDto)
+        public IActionResult Edit([FromRoute] int id, CreatedEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -139,8 +139,22 @@ namespace Route.MVCAPP.PL.Controllers
             var message = string.Empty;
             try
             {
+                var updatedemployee = new UpdatedEmployeeDto()
+                {
+                    Name = employeeDto.Name,
+                    Address = employeeDto.Address,
+                    Age = employeeDto.Age,
+                    Salary = employeeDto.Salary,
+                    IsActive = employeeDto.IsActive,
+                    Email = employeeDto.Email,
+                    PhoneNumber = employeeDto.PhoneNumber,
+                    HiringDate = employeeDto.HiringDate,
+                    Gender = employeeDto.Gender,
+                    EmployeeType = employeeDto.EmployeeType,
+                    Id = id
+                };
 
-                var Updated = _employeeService.UpdateEmployee(employeeDto) > 0;
+                var Updated = _employeeService.UpdateEmployee(updatedemployee) > 0;
                 if (Updated)
                 {
                     return RedirectToAction("Index");

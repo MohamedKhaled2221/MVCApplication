@@ -19,6 +19,7 @@ namespace Route.MVCAPP.BLL.Services.Employees
             _employeeRepository = employeeRepository;
         }
 
+        #region Part 1 IEnummerable vs IQueryable
         public IEnumerable<EmployeeDto> GetAllEmployees()
         {
             var employees = _employeeRepository
@@ -36,6 +37,24 @@ namespace Route.MVCAPP.BLL.Services.Employees
                              }).ToList();
             return employees;
         }
+        //public IEnumerable<EmployeeDto> GetAllEmployees()
+        //{
+        //    var employees = _employeeRepository
+        //                     .GetAll().Where(x => !x.IsDeleted)
+        //                     .Select(employee => new EmployeeDto()
+        //                     {
+        //                         Id = employee.Id,
+        //                         Name = employee.Name,
+        //                         Age = employee.Age,
+        //                         Salary = employee.Salary,
+        //                         IsActive = employee.IsActive,
+        //                         Email = employee.Email,
+        //                         Gender = employee.Gender.ToString(),
+        //                         EmployeeType = employee.EmployeeType.ToString()
+        //                     }).ToList();
+        //    return employees;
+        //} 
+        #endregion
         public EmployeeDetailsDto? GetEmployeeById(int id)
         {
             var employee = _employeeRepository.GetById(id);

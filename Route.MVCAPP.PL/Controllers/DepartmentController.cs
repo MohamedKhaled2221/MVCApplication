@@ -39,17 +39,25 @@ namespace Route.MVCAPP.PL.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid) //Server Side Validation
             {
-                return View(departmentDto);
+                return View(departmentVM);
             }
             var message = string.Empty;
 
             try
             {
-                var result = _departmentService.CreateDepartment(departmentDto);
+                var CreatedDepartmentDto = new CreatedDepartmentDto()
+                {
+                    Code = departmentVM.Code,
+                    Name = departmentVM.Name,
+                    Description = departmentVM.Description,
+                    CreationDate = departmentVM.CreationDate
+                };
+                var result = _departmentService.CreateDepartment(CreatedDepartmentDto);
                 if (result > 0)
                 {
                     return RedirectToAction("Index");
@@ -58,7 +66,7 @@ namespace Route.MVCAPP.PL.Controllers
                 {
                     message = "Failed to Create Department";
                     ModelState.AddModelError(string.Empty, message);
-                    return View(departmentDto);
+                    return View(departmentVM);
                 }
             }
             catch (Exception ex)
@@ -69,7 +77,7 @@ namespace Route.MVCAPP.PL.Controllers
                 if (_environment.IsDevelopment())
                 {
                     message = ex.Message;
-                    return View(departmentDto);
+                    return View(departmentVM);
                 }
                 else
                 {
@@ -113,7 +121,7 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
               
                 Code = department.Code,
@@ -123,7 +131,7 @@ namespace Route.MVCAPP.PL.Controllers
             });
         }
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
             {
