@@ -5,6 +5,7 @@ using Route.MVCAPP.PL.ViewModels.Departments;
 
 namespace Route.MVCAPP.PL.Mapping
 {
+    #region Part 3 Mapping using AutoMapper
     public class MappingProfile : Profile
     {
         public MappingProfile()
@@ -18,8 +19,9 @@ namespace Route.MVCAPP.PL.Mapping
             #region Department
             CreateMap<DepartmentDetailsDto, DepartmentViewModel>();
             CreateMap<DepartmentViewModel, UpdatedDepartmentDto>();
-            CreateMap< DepartmentViewModel ,CreatedDepartmentDto>();
+            CreateMap<DepartmentViewModel, CreatedDepartmentDto>();
             #endregion
         }
-    }
+    } 
+    #endregion
 }
