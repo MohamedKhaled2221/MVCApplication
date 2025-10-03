@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Route.MVCAPP.BLL.DTOs.Employees;
 using Route.MVCAPP.DAL.Models.Employees;
 using Route.MVCAPP.DAL.Persistence.Repositories.Employees;
+using Route.MVCAPP.DAL.Persistence.UnitOfWork;
 
 namespace Route.MVCAPP.BLL.Services.Employees
 {
@@ -13,17 +14,19 @@ namespace Route.MVCAPP.BLL.Services.Employees
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitofwork;
 
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        public EmployeeService(IUnitOfWork unitOfWork)
         {
-            _employeeRepository = employeeRepository;
+            _unitofwork = unitOfWork;
         }
 
         #region Part 1 IEnummerable vs IQueryable
-        public IEnumerable<EmployeeDto> GetAllEmployees()
+        public IEnumerable<EmployeeDto> GetAllEmployees(string search)
         {
-            var employees = _employeeRepository
-                             .GetAllAsQueryable().Where(x => !x.IsDeleted)
+            var employees = _unitofwork.EmployeeRepository
+                             .GetAllAsQueryable()
+                             .Where(E => !E.IsDeleted && (string.IsNullOrEmpty(search) ||E.Name.ToLower().Contains (search.ToLower())))
                              .Select(employee => new EmployeeDto()
                              {
                                  Id = employee.Id,
@@ -33,31 +36,16 @@ namespace Route.MVCAPP.BLL.Services.Employees
                                  IsActive = employee.IsActive,
                                  Email = employee.Email,
                                  Gender = employee.Gender.ToString(),
-                                 EmployeeType = employee.EmployeeType.ToString()
+                                 EmployeeType = employee.EmployeeType.ToString(),
+                                 Department = employee.Department.Name
                              }).ToList();
             return employees;
         }
-        //public IEnumerable<EmployeeDto> GetAllEmployees()
-        //{
-        //    var employees = _employeeRepository
-        //                     .GetAll().Where(x => !x.IsDeleted)
-        //                     .Select(employee => new EmployeeDto()
-        //                     {
-        //                         Id = employee.Id,
-        //                         Name = employee.Name,
-        //                         Age = employee.Age,
-        //                         Salary = employee.Salary,
-        //                         IsActive = employee.IsActive,
-        //                         Email = employee.Email,
-        //                         Gender = employee.Gender.ToString(),
-        //                         EmployeeType = employee.EmployeeType.ToString()
-        //                     }).ToList();
-        //    return employees;
-        //} 
+       
         #endregion
         public EmployeeDetailsDto? GetEmployeeById(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employee =  _unitofwork.EmployeeRepository.GetById(id);
             if (employee is { })
                 return new EmployeeDetailsDto()
                 {
@@ -72,6 +60,7 @@ namespace Route.MVCAPP.BLL.Services.Employees
                     HiringDate = employee.HirringDate,
                     Gender = employee.Gender,
                     EmployeeType = employee.EmployeeType,
+                    Department = employee.Department.Name
 
                 };
             return null;
@@ -94,10 +83,12 @@ namespace Route.MVCAPP.BLL.Services.Employees
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.Now,
+                DepartmentId = employeeDto.DepartmentId
 
             };
 
-            return _employeeRepository.Add(employee);
+             _unitofwork.EmployeeRepository.Add(employee);
+          return  _unitofwork.Complete();
         }
         public int UpdateEmployee(UpdatedEmployeeDto employeeDto)
         {
@@ -117,21 +108,24 @@ namespace Route.MVCAPP.BLL.Services.Employees
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.Now,
+                DepartmentId = employeeDto.DepartmentId
 
             };
 
 
-            return _employeeRepository.Update(employee);
+            _unitofwork.EmployeeRepository.Update(employee);
+            return _unitofwork.Complete();
         }
 
         public bool DeleteEmployee(int id)
         {
-            var employee = _employeeRepository.GetById(id);
+            var employeeRepository = _unitofwork.EmployeeRepository;
+            var employee = employeeRepository.GetById(id);
             if (employee is { })
 
-                return _employeeRepository.Delete(employee) > 0;
+                 employeeRepository.Delete(employee) ;
 
-            return false;
+            return _unitofwork.Complete() > 0;
 
         }
 

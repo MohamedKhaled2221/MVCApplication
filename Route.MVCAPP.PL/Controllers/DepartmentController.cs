@@ -1,10 +1,12 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using System.Security.Policy;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.BLL.Services.Departments;
+using Route.MVCAPP.DAL.Models.Departments;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
 using Route.MVCAPP.PL.ViewModels.Departments;
 
@@ -16,12 +18,16 @@ namespace Route.MVCAPP.PL.Controllers
         private readonly IDepartmentService _departmentService;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentService departmentService,
+            ILogger<DepartmentController> logger,
+            IWebHostEnvironment environment , IMapper mapper)
         {
             _departmentService = departmentService;
             _logger = logger;
             _environment = environment;
+            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult Index()
@@ -56,14 +62,16 @@ namespace Route.MVCAPP.PL.Controllers
 
             try
             {
-                var CreatedDepartmentDto = new CreatedDepartmentDto()
-                {
-                    Code = departmentVM.Code,
-                    Name = departmentVM.Name,
-                    Description = departmentVM.Description,
-                    CreationDate = departmentVM.CreationDate
-                };
-                var result = _departmentService.CreateDepartment(CreatedDepartmentDto);
+                var CreatedDepartment = _mapper.Map<DepartmentViewModel, CreatedDepartmentDto>(departmentVM);
+
+                //var CreatedDepartmentDto = new CreatedDepartmentDto()
+                //{
+                //    Code = departmentVM.Code,
+                //    Name = departmentVM.Name,
+                //    Description = departmentVM.Description,
+                //    CreationDate = departmentVM.CreationDate
+                //};
+                var result = _departmentService.CreateDepartment(CreatedDepartment);
                 #region Part 6 Temp Data
                 if (result > 0)
                 {
@@ -125,14 +133,16 @@ namespace Route.MVCAPP.PL.Controllers
                 return NotFound(); //404
 
             }
-            return View(new DepartmentViewModel()
-            {
-              
-                Code = department.Code,
-                Name = department.Name,
-                Description = department.Description,
-                CreationDate = department.CreationDate
-            });
+            var departmentVM = _mapper.Map<DepartmentDetailsDto,DepartmentViewModel>(department);
+            //return View(new DepartmentViewModel()
+            //{
+
+            //    Code = department.Code,
+            //    Name = department.Name,
+            //    Description = department.Description,
+            //    CreationDate = department.CreationDate
+            //});
+            return View(departmentVM);
         }
         [HttpPost]
         public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
@@ -144,14 +154,16 @@ namespace Route.MVCAPP.PL.Controllers
             var message = string.Empty;
             try
             {
-                var UpdateDepartment = new UpdatedDepartmentDto()
-                {
-                    Id = id,
-                    Code = departmentVM.Code,
-                    Name = departmentVM.Name,
-                    Description = departmentVM.Description,
-                    CreationDate = departmentVM.CreationDate
-                };
+                var UpdateDepartment = _mapper.Map<DepartmentViewModel, UpdatedDepartmentDto>(departmentVM);
+
+                //var UpdateDepartment = new UpdatedDepartmentDto()
+                //{
+                //    Id = id,
+                //    Code = departmentVM.Code,
+                //    Name = departmentVM.Name,
+                //    Description = departmentVM.Description,
+                //    CreationDate = departmentVM.CreationDate
+                //};
                 var Updated = _departmentService.UpdateDepartment(UpdateDepartment) > 0;
                 if (Updated)
                 {
