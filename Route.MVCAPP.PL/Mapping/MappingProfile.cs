@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.BLL.DTOs.Employees;
+using Route.MVCAPP.DAL.Models.Employees;
 using Route.MVCAPP.PL.ViewModels.Departments;
 
 namespace Route.MVCAPP.PL.Mapping
@@ -13,6 +14,7 @@ namespace Route.MVCAPP.PL.Mapping
             #region Employee
             CreateMap<EmployeeDetailsDto, CreatedEmployeeDto>();
             CreateMap<CreatedEmployeeDto, UpdatedEmployeeDto>();
+            CreateMap<Employee, EmployeeDetailsDto>();
             #endregion
 
 

@@ -28,6 +28,7 @@
         <thead class="text-center">
             <tr>
                 <th>@Html.DisplayNameFor(D => D.Name)</th>
+                <th>@Html.DisplayNameFor(D => D.Image)</th>
                 <th>@Html.DisplayNameFor(D => D.EmployeeType)</th>
                 <th>@Html.DisplayNameFor(D => D.Email)</th>
                 <th>@Html.DisplayNameFor(D => D.Department)</th>
@@ -47,6 +48,9 @@
             @foreach (var employee in Model)
             {
                 <tr>
+                    <td>
+						<img src="~/Files/Images/@(employee.Image is not null ? employee.Image : "userimage.png")" class="img-fluid rounded-2" style="width: 50px; height:50px;" alt="Employee Image" />
+                    </td>
                     <td>@Html.DisplayFor(X=>employee.Name)</td>
                     <td>@Html.DisplayFor(X=>employee.EmployeeType)</td>
                     <td>@Html.DisplayFor(X=>employee.Email)</td>

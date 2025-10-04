@@ -11,6 +11,7 @@ namespace Route.MVCAPP.DAL.Models.Employees
     #region Part 3 Employee Module - Entities , Configs , Migration
     public class Employee : ModelBase
     {
+      
         public string Name { get; set; } = null!;
         public string? Email { get; set; }
 
