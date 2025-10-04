@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Route.MVCAPP.DAL.Common;
 
 namespace Route.MVCAPP.BLL.DTOs.Employees
@@ -40,6 +41,7 @@ namespace Route.MVCAPP.BLL.DTOs.Employees
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
         public int? DepartmentId { get; set; }
+        public IFormFile? Image { get; set; }
 
     }
 }

@@ -35,6 +35,7 @@ namespace Route.MVCAPP.BLL.DTOs.Employees
         public DateOnly HiringDate { get; set; }
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
-        public string? Department { get; set; } 
+        public string? Department { get; set; }
+        public String? Image { get; set; }
     }
 }

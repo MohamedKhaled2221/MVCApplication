@@ -7,6 +7,7 @@ using Route.MVCAPP.BLL.Services.Employees;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.PL.Mapping;
 using Route.MVCAPP.DAL.Persistence.UnitOfWork;
+using Route.MVCAPP.BLL.Common.Service.Attachments;
 
 namespace Route.MVCAPP.PL
 {
@@ -25,10 +26,12 @@ namespace Route.MVCAPP.PL
             {
                 OptionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+            builder.Services.AddTransient<IAttachmentService, AttachmentService>();
             #endregion
 
             var app = builder.Build();

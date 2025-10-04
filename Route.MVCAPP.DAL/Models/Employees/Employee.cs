@@ -25,7 +25,7 @@ namespace Route.MVCAPP.DAL.Models.Employees
 
         public Department? Department { get; set; }
         public int? DepartmentId { get; set; }
-       
+        public string? Image{ get; set; }
 
     } 
     #endregion

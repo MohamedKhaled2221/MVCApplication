@@ -14,7 +14,7 @@ namespace Route.MVCAPP.DAL.Persistence.UnitOfWork
         private ApplicationDbContext _dbContext;
 
         public IEmployeeRepository EmployeeRepository => new EmployeeRepository(_dbContext);
-        public IDepartmentRepository DepartmentRepository => new DepartmentRepository(_dbContext);
+        public IDepartmentRepository DepartmentRepository => new AttachmentsServices(_dbContext);
         public UnitOfWork(ApplicationDbContext dbContext) {
           _dbContext=dbContext;
         

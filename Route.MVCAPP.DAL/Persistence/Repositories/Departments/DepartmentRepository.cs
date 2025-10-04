@@ -12,9 +12,9 @@ using Route.MVCAPP.DAL.Persistence.Repositories._Generic;
 namespace Route.MVCAPP.DAL.Persistence.Repositories.Departments
 {
     #region Part 5 Department Repository - DAL
-    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
+    public class AttachmentsServices : GenericRepository<Department>, IDepartmentRepository
     {
-        public DepartmentRepository(ApplicationDbContext dbContext) : base(dbContext)
+        public AttachmentsServices(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
 
