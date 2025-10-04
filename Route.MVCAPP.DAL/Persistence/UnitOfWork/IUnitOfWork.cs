@@ -9,11 +9,11 @@ using Route.MVCAPP.DAL.Persistence.Repositories.Employees;
 namespace Route.MVCAPP.DAL.Persistence.UnitOfWork
 {
     #region Part 4 Unit Of Work
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
         public IEmployeeRepository EmployeeRepository { get; }
         public IDepartmentRepository DepartmentRepository { get; }
-        int Complete();
+        Task<int> CompleteAsync();
     } 
     #endregion
 }

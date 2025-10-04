@@ -12,9 +12,9 @@ namespace Route.MVCAPP.BLL.DTOs.Employees
     {
         public int Id { get; set; }
         public int CreatedBy { get; set; }
-        public DateOnly CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
         public int LastModifiedBy { get; set; }
-        public DateOnly LastModifiedOn { get; set; }
+        public DateTime LastModifiedOn { get; set; }
         public string Name { get; set; } = null!;
         public int? Age { get; set; }
         public string? Address { get; set; }
@@ -36,6 +36,9 @@ namespace Route.MVCAPP.BLL.DTOs.Employees
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
         public string? Department { get; set; }
-        public String? Image { get; set; }
+        public string? Image { get; set; }
+        public bool IsDeleted { get; set; }
+
+
     }
 }

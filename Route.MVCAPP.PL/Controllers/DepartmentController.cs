@@ -30,13 +30,13 @@ namespace Route.MVCAPP.PL.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             //#region Part 5 View Data and View Bag
             //ViewData["obj"] = "Hello From View Data";
             //ViewBag.obj2 = "Hello From View Bag"; 
             //#endregion
-            var departments = _departmentService.GetAllDepartments();
+            var departments = await _departmentService.GetAllDepartmentsAsync();
 
             return View(departments);
         }
@@ -52,7 +52,7 @@ namespace Route.MVCAPP.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DepartmentViewModel departmentVM)
+        public async  Task<IActionResult> Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid) //Server Side Validation
             {
@@ -71,7 +71,7 @@ namespace Route.MVCAPP.PL.Controllers
                 //    Description = departmentVM.Description,
                 //    CreationDate = departmentVM.CreationDate
                 //};
-                var result = _departmentService.CreateDepartment(CreatedDepartment);
+                var result =await _departmentService.CreateDepartmentAsync(CreatedDepartment);
                 #region Part 6 Temp Data
                 if (result > 0)
                 {
@@ -101,14 +101,14 @@ namespace Route.MVCAPP.PL.Controllers
         }
         #endregion
         #region Part 9 Department Controller - Details
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
 
         {
             if (id == null || id <= 0)
             {
                 return BadRequest();
             }
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department =await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound();
@@ -121,13 +121,13 @@ namespace Route.MVCAPP.PL.Controllers
         #region Part 1 Department Controller - Edit 
         [HttpGet]
 
-        public IActionResult Edit(int? id)
+        public async  Task<IActionResult> Edit(int? id)
         {
             if (!id.HasValue )
             {
                 return BadRequest(); //400
             }
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department =await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound(); //404
@@ -145,7 +145,7 @@ namespace Route.MVCAPP.PL.Controllers
             return View(departmentVM);
         }
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
             {
@@ -164,7 +164,7 @@ namespace Route.MVCAPP.PL.Controllers
                 //    Description = departmentVM.Description,
                 //    CreationDate = departmentVM.CreationDate
                 //};
-                var Updated = _departmentService.UpdateDepartment(UpdateDepartment) > 0;
+                var Updated = await _departmentService.UpdateDepartmentAsync(UpdateDepartment) > 0;
                 if (Updated)
                 {
                     return RedirectToAction("Index");
@@ -188,27 +188,14 @@ namespace Route.MVCAPP.PL.Controllers
         }
         #endregion
         #region Part 2 Department Controller - Delete
-        //[HttpGet]
-        //public IActionResult Delete(int? id)
-        //{
-        //    if (!id.HasValue || id <= 0)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var department = _departmentService.GetDepartmentById(id.Value);
-        //    if (department == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(department);
-        //}
+
         [HttpPost]
-        public IActionResult Delete([FromRoute]int id)
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             var message = string.Empty;
             try
             {
-                var deleted = _departmentService.DeleteDepartment(id) ;
+                var deleted =await _departmentService.DeleteDepartmentAsync(id) ;
 
                 if (deleted)
                 {

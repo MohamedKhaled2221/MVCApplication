@@ -10,7 +10,7 @@ namespace Route.MVCAPP.BLL.Common.Service.Attachments
     public interface IAttachmentService
     {
         #region Part 5 Attachment service 
-        string? Upload(IFormFile file, string folderName);
+        Task<string?> UploadAsync(IFormFile file, string folderName);
         bool Delete(string filePath); 
         #endregion
     }

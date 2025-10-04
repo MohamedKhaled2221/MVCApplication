@@ -20,14 +20,14 @@ namespace Route.MVCAPP.DAL.Persistence.UnitOfWork
         
         }
 
-        public int Complete()
+        public async Task<int> CompleteAsync()
         {
-            return _dbContext.SaveChanges();
-        }
-        public void Dispose()
-        {
-            _dbContext.Dispose();
+            return await _dbContext.SaveChangesAsync();
         }
 
+        public async ValueTask DisposeAsync()
+        {
+           await _dbContext.DisposeAsync();
         }
+    }
 }

@@ -14,7 +14,7 @@ namespace Route.MVCAPP.BLL.Common.Service.Attachments
         public readonly List<string> AllowedExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
         // Maximum file size in bytes (e.g., 5 MB)
         public const int _allowedSize = 2_097_152; // 5 MB
-        public string? Upload(IFormFile file, string folderName)
+        public async Task<string?> UploadAsync(IFormFile file, string folderName)
         {
             // 1 - Validate file extension
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -34,7 +34,7 @@ namespace Route.MVCAPP.BLL.Common.Service.Attachments
                                                                //6 - Save File As Stream [Data Per Time]
             using var filestream = new FileStream(filePath, FileMode.Create);
             // 7 - Copy File To FileStream
-            file.CopyTo(filestream);
+           await file.CopyToAsync(filestream);
             // 8 - Return File Name
             return FileName;
 

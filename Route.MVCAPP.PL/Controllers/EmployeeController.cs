@@ -30,9 +30,9 @@ namespace Route.MVCAPP.PL.Controllers
         }  
         [HttpGet]
         #region Part 2 Search By EmployeeName
-        public IActionResult Index(string search)
+        public async Task<IActionResult> Index(string search)
         {
-            var Employees = _employeeService.GetAllEmployees(search);
+            var Employees =await _employeeService.GetAllEmployeesAsync(search);
 
             return View(Employees);
         } 
@@ -49,7 +49,7 @@ namespace Route.MVCAPP.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreatedEmployeeDto EmployeeDto)
+        public async Task<IActionResult> Create(CreatedEmployeeDto EmployeeDto)
         {
             if (!ModelState.IsValid) //Server Side Validation
             {
@@ -59,7 +59,7 @@ namespace Route.MVCAPP.PL.Controllers
 
             try
             {
-                var result = _employeeService.CreateEmployee(EmployeeDto);
+                var result =await _employeeService.CreateEmployeeAsync(EmployeeDto);
                 if (result > 0)
                 {
                     return RedirectToAction("Index");
@@ -93,14 +93,14 @@ namespace Route.MVCAPP.PL.Controllers
         #endregion
         #region Part 8 Employee Controller - Details
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
 
         {
             if (id == null || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
@@ -114,13 +114,13 @@ namespace Route.MVCAPP.PL.Controllers
         #region Part 9 Employee Controller - Edit
         [HttpGet]
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (!id.HasValue || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
@@ -146,7 +146,7 @@ namespace Route.MVCAPP.PL.Controllers
         [HttpPost]
 
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, CreatedEmployeeDto employeeDto)
+        public async Task<IActionResult> Edit([FromRoute] int id, CreatedEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -171,7 +171,7 @@ namespace Route.MVCAPP.PL.Controllers
                 //    Id = id
                 //};
 
-                var Updated = _employeeService.UpdateEmployee(updatedemployee) > 0;
+                var Updated =await _employeeService.UpdateEmployeeAsync(updatedemployee) > 0;
                 if (Updated)
                 {
                     return RedirectToAction("Index");
@@ -204,13 +204,13 @@ namespace Route.MVCAPP.PL.Controllers
 
         #region Part 10 - Employee Controller - Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (!id.HasValue || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
@@ -220,12 +220,12 @@ namespace Route.MVCAPP.PL.Controllers
         [HttpPost]
 
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
             try
             {
-                var deleted = _employeeService.DeleteEmployee(id);
+                var deleted =await _employeeService.DeleteEmployeeAsync(id);
 
                 if (deleted)
                 {
