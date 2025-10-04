@@ -22,10 +22,10 @@ namespace Route.MVCAPP.BLL.Services.Departments
           
             _unitofwork = unitOfWork;
         }
-        public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
+        public async Task<IEnumerable<DepartmentToReturnDto>> GetAllDepartmentsAsync()
         {
 
-            var departments = _unitofwork.DepartmentRepository.GetAllAsQueryable()
+            var departments =await _unitofwork.DepartmentRepository.GetAllAsQueryable()
                 .Select(department => new DepartmentToReturnDto
                 {
                     Id = department.Id,
@@ -34,15 +34,15 @@ namespace Route.MVCAPP.BLL.Services.Departments
                     CreationDate = department.CreationDate
                 })
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
 
-            return departments;
+            return  departments;
         }
-        public DepartmentDetailsDto? GetDepartmentById(int id)
+        public async Task<DepartmentDetailsDto?> GetDepartmentByIdAsync(int id)
         {
-            var department = _unitofwork.DepartmentRepository.GetById(id);
+            var department =await  _unitofwork.DepartmentRepository.GetAsync(id);
             if (department is { })
-                return new DepartmentDetailsDto
+                return  new DepartmentDetailsDto
                 {
                     Id = department.Id,
                     Name = department.Name,
@@ -57,7 +57,7 @@ namespace Route.MVCAPP.BLL.Services.Departments
             return null;
         }
 
-        public int CreateDepartment(CreatedDepartmentDto departmentDto)
+        public async Task<int> CreateDepartmentAsync(CreatedDepartmentDto departmentDto)
         {
             var departments = new Department
             {
@@ -71,21 +71,21 @@ namespace Route.MVCAPP.BLL.Services.Departments
 
             };
             _unitofwork.DepartmentRepository.Add(departments);
-           return _unitofwork.Complete();
+           return await _unitofwork.CompleteAsync();
         }
 
-        public bool DeleteDepartment(int id)
+        public async Task<bool> DeleteDepartmentAsync(int id)
         {
-            var departemntRepository = _unitofwork.DepartmentRepository;
-            var department = departemntRepository.GetById(id);
+            var departemntRepository =  _unitofwork.DepartmentRepository;
+            var department =await departemntRepository.GetAsync(id);
             if (department is { })
             
                 departemntRepository.Delete(department) ;
             
-            return _unitofwork.Complete()>0;
+            return await  _unitofwork.CompleteAsync()>0;
         }
 
-        public int UpdateDepartment(UpdatedDepartmentDto departmentDto)
+        public async Task<int> UpdateDepartmentAsync(UpdatedDepartmentDto departmentDto)
         {
             var departments = new Department
             {
@@ -100,7 +100,7 @@ namespace Route.MVCAPP.BLL.Services.Departments
 
             };
             _unitofwork.DepartmentRepository.Update(departments);
-            return _unitofwork.Complete();
+            return await _unitofwork.CompleteAsync();
         }
     }
     #endregion
