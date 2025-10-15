@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using System.Security.Policy;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
@@ -13,6 +14,7 @@ using Route.MVCAPP.PL.ViewModels.Departments;
 namespace Route.MVCAPP.PL.Controllers
 {
     #region Part 7 Department Controller - Index
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

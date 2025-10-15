@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.BLL.DTOs.Employees;
@@ -10,6 +11,7 @@ using Route.MVCAPP.PL.ViewModels.Departments;
 namespace Route.MVCAPP.PL.Controllers
 {
     #region Part 2 ValidateAntiForgeryToken
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;

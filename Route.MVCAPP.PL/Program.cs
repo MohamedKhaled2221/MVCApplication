@@ -8,6 +8,9 @@ using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.PL.Mapping;
 using Route.MVCAPP.DAL.Persistence.UnitOfWork;
 using Route.MVCAPP.BLL.Common.Service.Attachments;
+using Route.MVCAPP.DAL.Models.identity;
+using Microsoft.AspNetCore.Identity;
+using Route.MVCAPP.BLL.Common.Service.EmailSettings;
 
 namespace Route.MVCAPP.PL
 {
@@ -32,6 +35,11 @@ namespace Route.MVCAPP.PL
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
             builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IEmailSettings, EmailSettings>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                             .AddEntityFrameworkStores<ApplicationDbContext>()
+                             .AddDefaultTokenProviders();
+
             #endregion
 
             var app = builder.Build();
@@ -49,11 +57,13 @@ namespace Route.MVCAPP.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             app.Run();
         }
