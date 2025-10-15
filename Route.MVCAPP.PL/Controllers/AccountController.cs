@@ -63,107 +63,107 @@ namespace Route.MVCAPP.PL.Controllers
         }
         #endregion
 
-        //        #region LogIn
-        //        [HttpGet]
-        //        public IActionResult LogIn()
-        //        {
-        //            return View();
-        //        }
+        #region Part 5 Account Controller - LogIn 
+        [HttpGet]
+        public IActionResult LogIn()
+        {
+            return View();
+        }
 
-        //        [HttpPost]
-        //        public async Task<IActionResult> LogIn(LoginViewModel loginViewModel)
+        [HttpPost]
+        public async Task<IActionResult> LogIn(LoginViewModel loginViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            // 1-  Find User by Email
+            var User = await _userManager.FindByEmailAsync(loginViewModel.Email);
+            // 2- if User Is not null
+            if (User is { })
+            {
+                // 3 - Check Password is Correct
+                var flag = await _userManager.CheckPasswordAsync(User, loginViewModel.Password);
+                if (flag) // Email Exists and Password is Correct
+                {
+                    // 4 - Login
+                    var Result = await _signInManager.PasswordSignInAsync(User, loginViewModel.Password, loginViewModel.RememberMe, false);
+                    if (Result.IsNotAllowed)
+                    {
+
+                        ModelState.AddModelError(string.Empty, "You are not Allowed to Login");
+                        return View(loginViewModel);
+                    }
+                    if (Result.IsLockedOut)
+                    {
+
+                        ModelState.AddModelError(string.Empty, "Your Account is Locked");
+                        return View(loginViewModel);
+                    }
+                    if (Result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                    }
+                }
+
+            }
+
+            // 4 - Login
+            // 5 - if Account is allowed or locked
+
+            ///else 
+            ModelState.AddModelError(string.Empty, "Invalid Email or Password");
+            return View(loginViewModel);
+        }
+        #endregion
+        #region SignOut
+        [HttpGet]
+        public async new Task<IActionResult> SignOut()
+        {
+            // Delete Token
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(LogIn));
+        }
+        #endregion
+        //#region Forget Password
+        //[HttpGet]
+        //public IActionResult ForgetPassword()
+        //{
+        //    return View();
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var User = await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
+        //        if (User is not null)
         //        {
-        //            if (!ModelState.IsValid)
+        //            // Generate URL
+
+        //            // Generate Token
+        //            var token = await _userManager.GeneratePasswordResetTokenAsync(User);
+        //            var resetPassword = Url.Action("ResetPassword", "Account", new { email = forgetPasswordViewModel.Email, token = token }, Request.Scheme);
+        //            // https://localhost:7193/Account/ResetPassword?email=mo@gmail.com&token=dsfsdfdsfsdfdsfsdf
+        //            var email = new Email()
         //            {
-        //                return BadRequest();
-        //            }
-        //            // 1-  Find User by Email
-        //            var User = await _userManager.FindByEmailAsync(loginViewModel.Email);
-        //            // 2- if User Is not null
-        //            if (User is { })
-        //            {
-        //                // 3 - Check Password is Correct
-        //                var flag = await _userManager.CheckPasswordAsync(User, loginViewModel.Password);
-        //                if (flag) // Email Exists and Password is Correct
-        //                {
-        //                    // 4 - Login
-        //                    var Result = await _signInManager.PasswordSignInAsync(User, loginViewModel.Password, loginViewModel.RememberMe, false);
-        //                    if (Result.IsNotAllowed)
-        //                    {
+        //                To = forgetPasswordViewModel.Email,
+        //                Subject = "Reset Your Password",
+        //                Body = resetPassword ?? string.Empty
+        //            };
+        //            // Send Email
+        //            _emailSettings.SendEmail(email);
 
-        //                        ModelState.AddModelError(string.Empty, "You are not Allowed to Login");
-        //                        return View(loginViewModel);
-        //                    }
-        //                    if (Result.IsLockedOut)
-        //                    {
+        //            return RedirectToAction("CheckYourInbox");
 
-        //                        ModelState.AddModelError(string.Empty, "Your Account is Locked");
-        //                        return View(loginViewModel);
-        //                    }
-        //                    if (Result.Succeeded)
-        //                    {
-        //                        return RedirectToAction(nameof(HomeController.Index), "Home");
-        //                    }
-        //                }
-
-        //            }
-
-        //            // 4 - Login
-        //            // 5 - if Account is allowed or locked
-
-        //            ///else 
-        //            ModelState.AddModelError(string.Empty, "Invalid Email or Password");
-        //            return View(loginViewModel);
         //        }
-        //        #endregion
-        //        #region SignOut
-        //        [HttpGet]
-        //        public async new Task<IActionResult> SignOut()
-        //        {
-        //            // Delete Token
-        //            await _signInManager.SignOutAsync();
-        //            return RedirectToAction(nameof(LogIn));
-        //        }
-        //        #endregion
-        //        #region Forget Password
-        //        [HttpGet]
-        //        public IActionResult ForgetPassword()
-        //        {
-        //            return View();
-        //        }
-        //        [HttpPost]
-        //        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordViewModel)
-        //        {
-        //            if (ModelState.IsValid)
-        //            {
-        //                var User = await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
-        //                if (User is not null)
-        //                {
-        //                    // Generate URL
-
-        //                    // Generate Token
-        //                    var token = await _userManager.GeneratePasswordResetTokenAsync(User);
-        //                    var resetPassword = Url.Action("ResetPassword", "Account", new { email = forgetPasswordViewModel.Email, token = token }, Request.Scheme);
-        //                    // https://localhost:7193/Account/ResetPassword?email=mo@gmail.com&token=dsfsdfdsfsdfdsfsdf
-        //                    var email = new Email()
-        //                    {
-        //                        To = forgetPasswordViewModel.Email,
-        //                        Subject = "Reset Your Password",
-        //                        Body = resetPassword ?? string.Empty
-        //                    };
-        //                    // Send Email
-        //                    _emailSettings.SendEmail(email);
-
-        //                    return RedirectToAction("CheckYourInbox");
-
-        //                }
-        //                ModelState.AddModelError(string.Empty, "Invalid Email");
+        //        ModelState.AddModelError(string.Empty, "Invalid Email");
 
 
-        //            }
-        //            return View(forgetPasswordViewModel);
-        //        }
-        //        #endregion
+        //    }
+        //    return View(forgetPasswordViewModel);
+        //}
+       // #endregion
         //        [HttpGet]
         //        public IActionResult CheckYourInbox()
         //        {
