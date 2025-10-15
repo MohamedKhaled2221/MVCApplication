@@ -125,45 +125,45 @@ namespace Route.MVCAPP.PL.Controllers
             return RedirectToAction(nameof(LogIn));
         }
         #endregion
-        //#region Forget Password
-        //[HttpGet]
-        //public IActionResult ForgetPassword()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var User = await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
-        //        if (User is not null)
-        //        {
-        //            // Generate URL
+        #region Part 6 Forget Password
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var User = await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
+                if (User is not null)
+                {
+                    // Generate URL
 
-        //            // Generate Token
-        //            var token = await _userManager.GeneratePasswordResetTokenAsync(User);
-        //            var resetPassword = Url.Action("ResetPassword", "Account", new { email = forgetPasswordViewModel.Email, token = token }, Request.Scheme);
-        //            // https://localhost:7193/Account/ResetPassword?email=mo@gmail.com&token=dsfsdfdsfsdfdsfsdf
-        //            var email = new Email()
-        //            {
-        //                To = forgetPasswordViewModel.Email,
-        //                Subject = "Reset Your Password",
-        //                Body = resetPassword ?? string.Empty
-        //            };
-        //            // Send Email
-        //            _emailSettings.SendEmail(email);
+                    // Generate Token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(User);
+                    var resetPassword = Url.Action("ResetPassword", "Account", new { email = forgetPasswordViewModel.Email, token = token }, Request.Scheme);
+                    // https://localhost:7193/Account/ResetPassword?email=mo@gmail.com&token=dsfsdfdsfsdfdsfsdf
+                    var email = new Email()
+                    {
+                        To = forgetPasswordViewModel.Email,
+                        Subject = "Reset Your Password",
+                        Body = resetPassword ?? string.Empty
+                    };
+                    // Send Email
+                    _emailSettings.SendEmail(email);
 
-        //            return RedirectToAction("CheckYourInbox");
+                    return RedirectToAction("CheckYourInbox");
 
-        //        }
-        //        ModelState.AddModelError(string.Empty, "Invalid Email");
+                }
+                ModelState.AddModelError(string.Empty, "Invalid Email");
 
 
-        //    }
-        //    return View(forgetPasswordViewModel);
-        //}
-       // #endregion
+            }
+            return View(forgetPasswordViewModel);
+        }
+        #endregion
         //        [HttpGet]
         //        public IActionResult CheckYourInbox()
         //        {
