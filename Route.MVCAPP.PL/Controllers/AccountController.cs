@@ -136,6 +136,7 @@ namespace Route.MVCAPP.PL.Controllers
         {
             if (ModelState.IsValid)
             {
+                #region Part 7 Send Email
                 var User = await _userManager.FindByEmailAsync(forgetPasswordViewModel.Email);
                 if (User is not null)
                 {
@@ -154,7 +155,8 @@ namespace Route.MVCAPP.PL.Controllers
                     // Send Email
                     _emailSettings.SendEmail(email);
 
-                    return RedirectToAction("CheckYourInbox");
+                    return RedirectToAction("CheckYourInbox"); 
+                    #endregion
 
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Email");
