@@ -166,45 +166,47 @@ namespace Route.MVCAPP.PL.Controllers
             return View(forgetPasswordViewModel);
         }
         #endregion
-        //        [HttpGet]
-        //        public IActionResult CheckYourInbox()
-        //        {
-        //            return View();
-        //        }
-        //        [HttpGet]
-        //        public IActionResult ResetPassword(string email, string token)
-        //        {
-        //           TempData["email"] = email;
-        //            TempData["token"] = token;
-        //            return View();
-        //        }
-        //        [HttpPost]
-        //        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel)
-        //        {
-        //            if (ModelState.IsValid)
-        //            {
-        //                var email = TempData["email"] as string;
-        //                var token = TempData["token"] as string;
-        //                var User =await  _userManager.FindByEmailAsync(email);
-        //                if (User is not null)
-        //                {
-        //                    var Result =await  _userManager.ResetPasswordAsync(User, token , resetPasswordViewModel.Password);
-        //                    if (Result.Succeeded)
-        //                    {
-        //                        return RedirectToAction("LogIn");
-        //                    }
-        //                    foreach (var error in Result.Errors)
-        //                    {
-        //                        ModelState.AddModelError(string.Empty, error.Description);
-        //                    }
-        //                    return View(resetPasswordViewModel);
-        //                }
+        #region Part 8 Reset Password
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["email"] as string;
+                var token = TempData["token"] as string;
+                var User = await _userManager.FindByEmailAsync(email);
+                if (User is not null)
+                {
+                    var Result = await _userManager.ResetPasswordAsync(User, token, resetPasswordViewModel.Password);
+                    if (Result.Succeeded)
+                    {
+                        return RedirectToAction("LogIn");
+                    }
+                    foreach (var error in Result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(resetPasswordViewModel);
+                }
 
 
-        //            }
-        //            ModelState.AddModelError(string.Empty, "Invalid Operation , Please Try again");
-        //            return View(resetPasswordViewModel);
-        //        }
-        //    }
-    }
+            }
+            ModelState.AddModelError(string.Empty, "Invalid Operation , Please Try again");
+            return View(resetPasswordViewModel);
+        }
+    } 
+    #endregion
+}
 
