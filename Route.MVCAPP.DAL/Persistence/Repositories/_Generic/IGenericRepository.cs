@@ -14,16 +14,16 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories._Generic
         // 5 CRUD Operations
 
         // 1. Get by id
-        T? GetById(int id);
+        Task<T?> GetAsync(int id);
         // 2. Get all
-        IEnumerable<T> GetAll(bool withNoTracking = true);
+        Task<IEnumerable<T>> GetAllAsync(bool withNoTracking = true);
         IQueryable<T> GetAllAsQueryable();
         // 3. Add
-        int Add(T entity);
+        void Add(T entity);
         // 4. Update
-        int Update(T entity);
+        void Update(T entity);
         // 5. Delete
-        int Delete(T entity);
+        void Delete(T entity);
     } 
     #endregion
 }

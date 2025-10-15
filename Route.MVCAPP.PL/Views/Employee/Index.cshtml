@@ -1,5 +1,6 @@
 ﻿
 @model IEnumerable<EmployeeDto>
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -9,19 +10,33 @@
 
 <a asp-controller="Employee" asp-action="Create" class="btn btn-primary">Create New Employee</a>
 <br />
+<form asp-action="Index" method="get" class="mt-5 row justify-content-center align-items-center ">
+    <div class="row col-8">
+        <div class="col-8">
+<input type="text" id="searchInp" name="search" class="form-control" placeholder="Search By Name" />
+        </div>
+		<div class="col-4">
+			<input type="submit" value="Search" class="btn btn-primary" />
+    </div>
+	</div>
+</form>
+
 
 @if (Model.Count() > 0)
 {
     <table class="mt-4 table table-striped table-hover">
         <thead class="text-center">
             <tr>
+                <th>@Html.DisplayNameFor(D => D.Image)</th>
                 <th>@Html.DisplayNameFor(D => D.Name)</th>
                 <th>@Html.DisplayNameFor(D => D.EmployeeType)</th>
                 <th>@Html.DisplayNameFor(D => D.Email)</th>
+                <th>@Html.DisplayNameFor(D => D.Department)</th>
                 <th>@Html.DisplayNameFor(D => D.Age)</th>
                 <th>@Html.DisplayNameFor(D => D.Salary)</th>
                 <th>@Html.DisplayNameFor(D => D.IsActive)</th>
                 <th>@Html.DisplayNameFor(D => D.Gender)</th>
+
 
                 <th>Details</th>
                 <th>Update</th>
@@ -33,24 +48,20 @@
             @foreach (var employee in Model)
             {
                 <tr>
-                    <td>@employee.Name</td>
-                    <td>@employee.EmployeeType</td>
-                    <td>@employee.Email</td>
-                    <td>@employee.Age</td>
-                    <td>@employee.Salary</td>
-                    <td>@employee.IsActive</td>
-                    <td>@employee.Gender</td>
+                    <td>
+						<img src="~/Files/Images/@(employee.Image is not null ? employee.Image : "userimage.png")" class="img-fluid rounded-2" style="width: 50px; height:50px;" alt="Employee Image" />
+                    </td>
+                    <td>@Html.DisplayFor(X=>employee.Name)</td>
+                    <td>@Html.DisplayFor(X=>employee.EmployeeType)</td>
+                    <td>@Html.DisplayFor(X=>employee.Email)</td>
+					<td>@Html.DisplayFor(X => employee.Department)</td>
+                    <td>@Html.DisplayFor(X=>employee.Age)</td>
+                    <td>@Html.DisplayFor(X=>employee.Salary)</td>
+                    <td>@Html.DisplayFor(X=>employee.IsActive)</td>
+                    <td>@Html.DisplayFor(X=>employee.Gender)</td>
 
-                    <td>
-                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id" class="btn btn-warning">
-                            <i class="fas fa-eye"></i> Details
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-success">
-                            <i class="fas fa-edit"></i> Update
-                        </a>
-                    </td>
+                    <partial name="_ButtonsPartial" model="employee.Id" />
+
                     <td>
                         @* <a asp-action="Delete" asp-route-id="@employee.Id" class="btn btn-danger">
                             <i class="fas fa-trash"></i> Delete
@@ -73,7 +84,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Are You Sure to Delete this Department?
+                                        Are You Sure to Delete this Employee?
                                     </div>
                                     <div class="modal-footer">
                                         <form asp-action="Delete" asp-controller="Employee" asp-route-id="@employee.Id" class="mt-4">

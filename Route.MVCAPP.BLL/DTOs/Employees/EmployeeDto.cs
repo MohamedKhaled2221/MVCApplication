@@ -26,5 +26,8 @@ namespace Route.MVCAPP.BLL.DTOs.Employees
 
         [Display(Name = "Employee Type")]
         public string EmployeeType { get; set; } = null!;
+        public string Department { get; set; } = null!;
+        public String? Image { get; set; }
+
     }
 }

@@ -7,22 +7,25 @@ using Microsoft.EntityFrameworkCore;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.DAL.Models.Departments;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
+using Route.MVCAPP.DAL.Persistence.UnitOfWork;
 
 namespace Route.MVCAPP.BLL.Services.Departments
 {
     #region Part 6 Department Service and DTOs - BLL
     public class DepartmentService : IDepartmentService
     {
-        private IDepartmentRepository _departemntRepository;
+        
+        private readonly IUnitOfWork _unitofwork;
 
-        public DepartmentService(IDepartmentRepository departemntRepository)
+        public DepartmentService(IUnitOfWork unitOfWork)
         {  // Dependency Injection
-            _departemntRepository = departemntRepository;
+          
+            _unitofwork = unitOfWork;
         }
-        public IEnumerable<DepartmentToReturnDto> GetAllDepartments()
+        public async Task<IEnumerable<DepartmentToReturnDto>> GetAllDepartmentsAsync()
         {
 
-            var departments = _departemntRepository.GetAllAsQueryable()
+            var departments =await _unitofwork.DepartmentRepository.GetAllAsQueryable()
                 .Select(department => new DepartmentToReturnDto
                 {
                     Id = department.Id,
@@ -31,15 +34,15 @@ namespace Route.MVCAPP.BLL.Services.Departments
                     CreationDate = department.CreationDate
                 })
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
 
-            return departments;
+            return  departments;
         }
-        public DepartmentDetailsDto? GetDepartmentById(int id)
+        public async Task<DepartmentDetailsDto?> GetDepartmentByIdAsync(int id)
         {
-            var department = _departemntRepository.GetById(id);
+            var department =await  _unitofwork.DepartmentRepository.GetAsync(id);
             if (department is { })
-                return new DepartmentDetailsDto
+                return  new DepartmentDetailsDto
                 {
                     Id = department.Id,
                     Name = department.Name,
@@ -54,7 +57,7 @@ namespace Route.MVCAPP.BLL.Services.Departments
             return null;
         }
 
-        public int CreateDepartment(CreatedDepartmentDto departmentDto)
+        public async Task<int> CreateDepartmentAsync(CreatedDepartmentDto departmentDto)
         {
             var departments = new Department
             {
@@ -67,23 +70,26 @@ namespace Route.MVCAPP.BLL.Services.Departments
                 LastModifiedOn = DateTime.Now,
 
             };
-            return _departemntRepository.Add(departments);
+            _unitofwork.DepartmentRepository.Add(departments);
+           return await _unitofwork.CompleteAsync();
         }
 
-        public bool DeleteDepartment(int id)
+        public async Task<bool> DeleteDepartmentAsync(int id)
         {
-            var department = _departemntRepository.GetById(id);
+            var departemntRepository =  _unitofwork.DepartmentRepository;
+            var department =await departemntRepository.GetAsync(id);
             if (department is { })
-            {
-                return _departemntRepository.Delete(department) > 0;
-            }
-            return false;
+            
+                departemntRepository.Delete(department) ;
+            
+            return await  _unitofwork.CompleteAsync()>0;
         }
 
-        public int UpdateDepartment(UpdatedDepartmentDto departmentDto)
+        public async Task<int> UpdateDepartmentAsync(UpdatedDepartmentDto departmentDto)
         {
             var departments = new Department
             {
+                Id = departmentDto.Id,
                 Name = departmentDto.Name,
                 Description = departmentDto.Description,
                 Code = departmentDto.Code,
@@ -93,7 +99,8 @@ namespace Route.MVCAPP.BLL.Services.Departments
                 LastModifiedOn = DateTime.Now,
 
             };
-            return _departemntRepository.Update(departments);
+            _unitofwork.DepartmentRepository.Update(departments);
+            return await _unitofwork.CompleteAsync();
         }
     }
     #endregion

@@ -18,7 +18,7 @@ namespace Route.MVCAPP.BLL.DTOs.Departments
 
         public bool IsDeleted { get; set; }
         public int CreatedBy { get; set; }
-        public DateOnly CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
         public int LastModifiedBy { get; set; }
         public DateTime LastModifiedOn { get; set; }
     }

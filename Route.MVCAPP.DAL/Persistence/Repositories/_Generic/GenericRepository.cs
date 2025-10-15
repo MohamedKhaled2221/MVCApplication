@@ -19,20 +19,20 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories._Generic
             _dbContext = dbContext;
         }
 
-        public T? GetById(int id)
+        public async Task<T?> GetAsync(int id)
         {
-            return _dbContext.Find<T> (id);
+            return await _dbContext.FindAsync<T> (id);
 
         }
-        public IEnumerable<T> GetAll(bool withNoTracking = true)
+        public async Task<IEnumerable<T>> GetAllAsync(bool withNoTracking = true)
         {
             if (withNoTracking)
             {
-                return _dbContext.Set<T>().Where(x => !x.IsDeleted).AsNoTracking().ToList(); // Detached  
+                return await _dbContext.Set<T>().Where(x => !x.IsDeleted).AsNoTracking().ToListAsync(); // Detached  
             }
             else
             {
-                return _dbContext.Set<T>().Where(x => !x.IsDeleted).ToList();   // unchanged  
+                return await _dbContext.Set<T>().Where(x => !x.IsDeleted).ToListAsync();   // unchanged  
             }
         }
         public IQueryable<T> GetAllAsQueryable()
@@ -41,27 +41,22 @@ namespace Route.MVCAPP.DAL.Persistence.Repositories._Generic
         }
 
 
-        public int Add(T entity)
+        public void Add(T entity)=>  _dbContext.Set<T>().Add(entity);
+            
+        
+
+        public void Delete(T entity)
         {
-            _dbContext.Set<T>().Add(entity);
-            return _dbContext.SaveChanges();
+           entity.IsDeleted = true;
+            _dbContext.Set<T>().Remove(entity);
+            
         }
 
-        public int Delete(T entity)
-        {
-            entity.IsDeleted = true;
-            _dbContext.Set<T>().Update(entity);
-            return _dbContext.SaveChanges();
-        }
 
 
 
-
-        public int Update(T entity)
-        {
-            _dbContext.Set<T>().Update(entity);
-            return _dbContext.SaveChanges();
-        }
+        public void Update(T entity)=>  _dbContext.Set<T>().Update(entity);
+        
 
 
     }

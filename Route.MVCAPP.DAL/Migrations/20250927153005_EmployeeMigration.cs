@@ -1,14 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-using System;
-
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Route.MVCAPP.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class EmployeeModuleMigration : Migration
+    public partial class EmployeeMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +20,7 @@ namespace Route.MVCAPP.DAL.Migrations
                     Name = table.Column<string>(type: "varchar(50)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "varchar(100)", nullable: true),
-                    HirringDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    HirringDate = table.Column<DateOnly>(type: "date", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Salary = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: true),

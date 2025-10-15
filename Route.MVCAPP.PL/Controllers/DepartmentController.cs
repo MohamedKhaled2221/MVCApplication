@@ -1,32 +1,44 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using System.Security.Policy;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Route.MVCAPP.BLL.DTOs;
 using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.BLL.Services.Departments;
+using Route.MVCAPP.DAL.Models.Departments;
 using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
 using Route.MVCAPP.PL.ViewModels.Departments;
 
 namespace Route.MVCAPP.PL.Controllers
 {
     #region Part 7 Department Controller - Index
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentService departmentService, ILogger<DepartmentController> logger, IWebHostEnvironment environment)
+        public DepartmentController(IDepartmentService departmentService,
+            ILogger<DepartmentController> logger,
+            IWebHostEnvironment environment , IMapper mapper)
         {
             _departmentService = departmentService;
             _logger = logger;
             _environment = environment;
+            _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var departments = _departmentService.GetAllDepartments();
+            //#region Part 5 View Data and View Bag
+            //ViewData["obj"] = "Hello From View Data";
+            //ViewBag.obj2 = "Hello From View Bag"; 
+            //#endregion
+            var departments = await _departmentService.GetAllDepartmentsAsync();
 
             return View(departments);
         }
@@ -38,57 +50,67 @@ namespace Route.MVCAPP.PL.Controllers
 
             return View();
         }
+
+
         [HttpPost]
-        public IActionResult Create(CreatedDepartmentDto departmentDto)
+        [ValidateAntiForgeryToken]
+        public async  Task<IActionResult> Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid) //Server Side Validation
             {
-                return View(departmentDto);
+                return View(departmentVM);
             }
             var message = string.Empty;
 
             try
             {
-                var result = _departmentService.CreateDepartment(departmentDto);
+                var CreatedDepartment = _mapper.Map<DepartmentViewModel, CreatedDepartmentDto>(departmentVM);
+
+                //var CreatedDepartmentDto = new CreatedDepartmentDto()
+                //{
+                //    Code = departmentVM.Code,
+                //    Name = departmentVM.Name,
+                //    Description = departmentVM.Description,
+                //    CreationDate = departmentVM.CreationDate
+                //};
+                var result =await _departmentService.CreateDepartmentAsync(CreatedDepartment);
+                #region Part 6 Temp Data
                 if (result > 0)
                 {
-                    return RedirectToAction("Index");
+                    TempData["Message"] = "Department Created Successfully :)";
+
                 }
                 else
                 {
-                    message = "Failed to Create Department";
+                    TempData["Message"] = "Failed to Create Department";
                     ModelState.AddModelError(string.Empty, message);
-                    return View(departmentDto);
-                }
+
+                } 
+                #endregion
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 //1- Log Exception
                 _logger.LogError(ex, ex.Message);
                 //2- Set Message for User
-                if (_environment.IsDevelopment())
-                {
-                    message = ex.Message;
-                    return View(departmentDto);
-                }
-                else
-                {
-                    message = "Department is not Created";
-                    return View("Error", message);
-                }
+                message = _environment.IsDevelopment() ? ex.Message : "An Error Has been Occured :(";
+                
 
             }
+            ModelState.AddModelError(string.Empty, message);
+            return View(departmentVM);
         }
         #endregion
         #region Part 9 Department Controller - Details
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
 
         {
             if (id == null || id <= 0)
             {
                 return BadRequest();
             }
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department =await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
                 return NotFound();
@@ -101,28 +123,31 @@ namespace Route.MVCAPP.PL.Controllers
         #region Part 1 Department Controller - Edit 
         [HttpGet]
 
-        public IActionResult Edit(int? id)
+        public async  Task<IActionResult> Edit(int? id)
         {
-            if (!id.HasValue || id <= 0)
+            if (!id.HasValue )
             {
-                return BadRequest();
+                return BadRequest(); //400
             }
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department =await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department == null)
             {
-                return NotFound();
+                return NotFound(); //404
 
             }
-            return View(new DepartmentEditViewModel()
-            {
-                Code = department.Code,
-                Name = department.Name,
-                Description = department.Description,
-                CreationDate = department.CreationDate
-            });
+            var departmentVM = _mapper.Map<DepartmentDetailsDto,DepartmentViewModel>(department);
+            //return View(new DepartmentViewModel()
+            //{
+
+            //    Code = department.Code,
+            //    Name = department.Name,
+            //    Description = department.Description,
+            //    CreationDate = department.CreationDate
+            //});
+            return View(departmentVM);
         }
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, DepartmentEditViewModel departmentVM)
+        public async Task<IActionResult> Edit([FromRoute] int id, DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
             {
@@ -131,15 +156,17 @@ namespace Route.MVCAPP.PL.Controllers
             var message = string.Empty;
             try
             {
-                var UpdateDepartment = new UpdatedDepartmentDto()
-                {
-                    Id = id,
-                    Code = departmentVM.Code,
-                    Name = departmentVM.Name,
-                    Description = departmentVM.Description,
-                    CreationDate = departmentVM.CreationDate
-                };
-                var Updated = _departmentService.UpdateDepartment(UpdateDepartment) > 0;
+                var UpdateDepartment = _mapper.Map<DepartmentViewModel, UpdatedDepartmentDto>(departmentVM);
+
+                //var UpdateDepartment = new UpdatedDepartmentDto()
+                //{
+                //    Id = id,
+                //    Code = departmentVM.Code,
+                //    Name = departmentVM.Name,
+                //    Description = departmentVM.Description,
+                //    CreationDate = departmentVM.CreationDate
+                //};
+                var Updated = await _departmentService.UpdateDepartmentAsync(UpdateDepartment) > 0;
                 if (Updated)
                 {
                     return RedirectToAction("Index");
@@ -147,8 +174,7 @@ namespace Route.MVCAPP.PL.Controllers
                 else
                 {
                     message = "An Error Has been Occured :(";
-                    ModelState.AddModelError(string.Empty, message);
-                    return View(departmentVM);
+                    
                 }
             }
             catch (Exception ex)
@@ -156,45 +182,26 @@ namespace Route.MVCAPP.PL.Controllers
                 //1- Log Exception
                 _logger.LogError(ex, ex.Message);
                 //2- Set Message for User
-                if (_environment.IsDevelopment())
-                {
-                    message = ex.Message;
-                    return View(departmentVM);
-                }
-                else
-                {
-                    message = "An Error Has been Occured :(";
-                    return View("Error", message);
-                }
+
+                message = _environment.IsDevelopment() ? ex.Message : "An Error Has been Occured :(";
             }
+            ModelState.AddModelError(string.Empty, message);
+            return View(departmentVM);
         }
         #endregion
         #region Part 2 Department Controller - Delete
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if (!id.HasValue || id <= 0)
-            {
-                return BadRequest();
-            }
-            var department = _departmentService.GetDepartmentById(id.Value);
-            if (department == null)
-            {
-                return NotFound();
-            }
-            return View(department);
-        }
+
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             var message = string.Empty;
             try
             {
-                var deleted = _departmentService.DeleteDepartment(id);
+                var deleted =await _departmentService.DeleteDepartmentAsync(id) ;
 
                 if (deleted)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
                 }
                 message = "An Error Has been Occured :(";
             }
@@ -206,6 +213,9 @@ namespace Route.MVCAPP.PL.Controllers
             }
             return RedirectToAction(nameof(Delete), new { id });
         }
+
+
+
 
         #endregion
 

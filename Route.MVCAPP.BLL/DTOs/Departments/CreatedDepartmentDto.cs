@@ -10,9 +10,10 @@ namespace Route.MVCAPP.BLL.DTOs.Departments
     #region Part 6 Department Service and DTOs - BLL
     public class CreatedDepartmentDto
     {
+        [Required(ErrorMessage = "The Name Field is Required ")]
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
-        [Required(ErrorMessage = "Code is Required Ya Mohamed")]
+        [Required(ErrorMessage = "The Code Field is Required ")]
         public string Code { get; set; } = null!;
         [Display(Name = "Date Of Creation")]
         public DateOnly CreationDate { get; set; }

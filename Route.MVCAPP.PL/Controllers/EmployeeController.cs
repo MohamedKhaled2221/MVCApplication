@@ -1,40 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Route.MVCAPP.BLL.DTOs.Departments;
 using Route.MVCAPP.BLL.DTOs.Employees;
+using Route.MVCAPP.BLL.Services.Departments;
 using Route.MVCAPP.BLL.Services.Employees;
+using Route.MVCAPP.DAL.Models.Departments;
+using Route.MVCAPP.PL.ViewModels.Departments;
 
 namespace Route.MVCAPP.PL.Controllers
 {
+    #region Part 2 ValidateAntiForgeryToken
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IMapper _mapper;
 
         #region Part 6 Employee Controller
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
-        {
-            _employeeService = employeeService;
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger
+            , IWebHostEnvironment environment , IMapper mapper)
+        {;
             _logger = logger;
+            _employeeService = employeeService;
             _environment = environment;
-        }
+            _mapper = mapper;
+
+            
+        }  
         [HttpGet]
-        public IActionResult Index()
+        #region Part 2 Search By EmployeeName
+        public async Task<IActionResult> Index(string search)
         {
-            var Employees = _employeeService.GetAllEmployees();
+            var Employees =await _employeeService.GetAllEmployeesAsync(search);
 
             return View(Employees);
-        }
+        } 
+        #endregion
 
         #region Part 7 Employee Controller - Create
 
         [HttpGet]
-        public IActionResult Create(int id)
+        public IActionResult Create()
         {
+           
 
             return View();
         }
         [HttpPost]
-        public IActionResult Create(CreatedEmployeeDto EmployeeDto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreatedEmployeeDto EmployeeDto)
         {
             if (!ModelState.IsValid) //Server Side Validation
             {
@@ -44,7 +61,7 @@ namespace Route.MVCAPP.PL.Controllers
 
             try
             {
-                var result = _employeeService.CreateEmployee(EmployeeDto);
+                var result =await _employeeService.CreateEmployeeAsync(EmployeeDto);
                 if (result > 0)
                 {
                     return RedirectToAction("Index");
@@ -78,14 +95,14 @@ namespace Route.MVCAPP.PL.Controllers
         #endregion
         #region Part 8 Employee Controller - Details
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
 
         {
             if (id == null || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
@@ -99,34 +116,39 @@ namespace Route.MVCAPP.PL.Controllers
         #region Part 9 Employee Controller - Edit
         [HttpGet]
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (!id.HasValue || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
 
             }
-            return View(new UpdatedEmployeeDto
-            {
-                Name = Employee.Name,
-                Address = Employee.Address,
-                Age = Employee.Age,
-                Email = Employee.Email,
-                PhoneNumber = Employee.PhoneNumber,
-                Salary = Employee.Salary,
-                IsActive = Employee.IsActive,
-                EmployeeType = Employee.EmployeeType,
-                Gender = Employee.Gender,
-                HiringDate = Employee.HiringDate,
-            });
+            var CreatedEmpoyee = _mapper.Map<EmployeeDetailsDto, CreatedEmployeeDto>(Employee);
+
+            //return View(new CreatedEmployeeDto()
+            //{
+            //    Name = Employee.Name,
+            //    Address = Employee.Address,
+            //    Age = Employee.Age,
+            //    Email = Employee.Email,
+            //    PhoneNumber = Employee.PhoneNumber,
+            //    Salary = Employee.Salary,
+            //    IsActive = Employee.IsActive,
+            //    EmployeeType = Employee.EmployeeType,
+            //    Gender = Employee.Gender,
+            //    HiringDate = Employee.HiringDate,
+            //});
+            return View(CreatedEmpoyee);
         }
         [HttpPost]
-        public IActionResult Edit([FromRoute] int id, UpdatedEmployeeDto employeeDto)
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute] int id, CreatedEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -135,8 +157,23 @@ namespace Route.MVCAPP.PL.Controllers
             var message = string.Empty;
             try
             {
+                var updatedemployee = _mapper.Map<CreatedEmployeeDto, UpdatedEmployeeDto>(employeeDto);
+                //var updatedemployee = new UpdatedEmployeeDto()
+                //{
+                //    Name = employeeDto.Name,
+                //    Address = employeeDto.Address,
+                //    Age = employeeDto.Age,
+                //    Salary = employeeDto.Salary,
+                //    IsActive = employeeDto.IsActive,
+                //    Email = employeeDto.Email,
+                //    PhoneNumber = employeeDto.PhoneNumber,
+                //    HiringDate = employeeDto.HiringDate,
+                //    Gender = employeeDto.Gender,
+                //    EmployeeType = employeeDto.EmployeeType,
+                //    Id = id
+                //};
 
-                var Updated = _employeeService.UpdateEmployee(employeeDto) > 0;
+                var Updated =await _employeeService.UpdateEmployeeAsync(updatedemployee) > 0;
                 if (Updated)
                 {
                     return RedirectToAction("Index");
@@ -169,13 +206,13 @@ namespace Route.MVCAPP.PL.Controllers
 
         #region Part 10 - Employee Controller - Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (!id.HasValue || id <= 0)
             {
                 return BadRequest();
             }
-            var Employee = _employeeService.GetEmployeeById(id.Value);
+            var Employee =await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (Employee == null)
             {
                 return NotFound();
@@ -183,12 +220,14 @@ namespace Route.MVCAPP.PL.Controllers
             return View(Employee);
         }
         [HttpPost]
-        public IActionResult Delete(int id)
+
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
             try
             {
-                var deleted = _employeeService.DeleteEmployee(id);
+                var deleted =await _employeeService.DeleteEmployeeAsync(id);
 
                 if (deleted)
                 {
@@ -208,5 +247,6 @@ namespace Route.MVCAPP.PL.Controllers
         #endregion 
         #endregion
 
-    }
+    } 
+    #endregion
 }

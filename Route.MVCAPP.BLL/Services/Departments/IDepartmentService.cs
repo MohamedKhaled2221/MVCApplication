@@ -10,11 +10,11 @@ namespace Route.MVCAPP.BLL.Services.Departments
     #region Part 6 Department Service and DTOs - BLL
     public interface IDepartmentService
     {
-        IEnumerable<DepartmentToReturnDto> GetAllDepartments();
-        DepartmentDetailsDto? GetDepartmentById(int id);
-        int CreateDepartment(CreatedDepartmentDto departmentDto);
-        int UpdateDepartment(UpdatedDepartmentDto departmentDto);
-        bool DeleteDepartment(int id);
+       Task< IEnumerable<DepartmentToReturnDto>> GetAllDepartmentsAsync();
+        Task<DepartmentDetailsDto?> GetDepartmentByIdAsync(int id);
+        Task<int> CreateDepartmentAsync(CreatedDepartmentDto departmentDto);
+        Task<int> UpdateDepartmentAsync(UpdatedDepartmentDto departmentDto);
+        Task<bool> DeleteDepartmentAsync(int id);
     }
     #endregion
 }

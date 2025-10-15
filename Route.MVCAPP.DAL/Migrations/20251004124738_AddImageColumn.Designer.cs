@@ -12,8 +12,8 @@ using Route.MVCAPP.DAL.Persistence.Data.Contexts;
 namespace Route.MVCAPP.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250927003057_EmployeeModuleMigration")]
-    partial class EmployeeModuleMigration
+    [Migration("20251004124738_AddImageColumn")]
+    partial class AddImageColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,12 @@ namespace Route.MVCAPP.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EmployeeType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -101,8 +107,11 @@ namespace Route.MVCAPP.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("HirringDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("HirringDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -130,7 +139,24 @@ namespace Route.MVCAPP.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("Route.MVCAPP.DAL.Models.Employees.Employee", b =>
+                {
+                    b.HasOne("Route.MVCAPP.DAL.Models.Departments.Department", "Department")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("Route.MVCAPP.DAL.Models.Departments.Department", b =>
+                {
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }

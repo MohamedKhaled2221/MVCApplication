@@ -12,8 +12,8 @@ using Route.MVCAPP.DAL.Persistence.Data.Contexts;
 namespace Route.MVCAPP.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250927045448_EmployeeModuleMigration")]
-    partial class EmployeeModuleMigration
+    [Migration("20250927153005_EmployeeMigration")]
+    partial class EmployeeMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,8 +104,8 @@ namespace Route.MVCAPP.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("HirringDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("HirringDate")
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");

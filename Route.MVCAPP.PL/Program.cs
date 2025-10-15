@@ -5,13 +5,21 @@ using Route.MVCAPP.DAL.Persistence.Repositories.Departments;
 using Route.MVCAPP.DAL.Persistence.Repositories.Employees;
 using Route.MVCAPP.BLL.Services.Employees;
 using Route.MVCAPP.BLL.DTOs.Departments;
+using Route.MVCAPP.PL.Mapping;
+using Route.MVCAPP.DAL.Persistence.UnitOfWork;
+using Route.MVCAPP.BLL.Common.Service.Attachments;
+using Route.MVCAPP.DAL.Models.identity;
+using Microsoft.AspNetCore.Identity;
+using Route.MVCAPP.BLL.Common.Service.EmailSettings;
 
 namespace Route.MVCAPP.PL
 {
+
     public class Program
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.  
@@ -22,15 +30,20 @@ namespace Route.MVCAPP.PL
                 OptionsBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+            builder.Services.AddTransient<IAttachmentService, AttachmentService>();
+            builder.Services.AddScoped<IEmailSettings, EmailSettings>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                             .AddEntityFrameworkStores<ApplicationDbContext>()
+                             .AddDefaultTokenProviders();
 
             #endregion
 
             var app = builder.Build();
-
+                
             // Configure the HTTP request pipeline.  
             if (!app.Environment.IsDevelopment())
             {
@@ -44,11 +57,13 @@ namespace Route.MVCAPP.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             app.Run();
         }
